@@ -45,7 +45,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PROJECT_SOURCES} ${PROJECT
 target_link_libraries(2D_Engine "${SDL2_LIBRARIES}/SDL2.lib" "${SDL2_LIBRARIES}/SDL2main.lib" "${SDL2_IMAGE_LIBRARIES}/SDL2_image.lib" "${SDL2_TTF_LIBRARIES}/SDL2_ttf.lib" "${SDL2_MIXER_LIBRARIES}/SDL2_mixer.lib" "${LUA_LIBRARIES}/liblua54.a")
 
 # Copy DLLs to the output directory
-file(COPY 
+file(COPY  
     "${SDL2_LIBRARIES}/SDL2.dll" 
     "${SDL2_IMAGE_LIBRARIES}/SDL2_image.dll" 
     "${SDL2_TTF_LIBRARIES}/SDL2_ttf.dll" 
