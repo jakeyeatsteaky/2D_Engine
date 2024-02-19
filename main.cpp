@@ -5,8 +5,13 @@
 
 #include <iostream>
 
+#pragma warning(push, 0)
 #include <glm/glm.hpp>
+#pragma warning(pop)
+
+
 #include <imgui/imgui.h>
+#include <imgui/imgui_sdl.h>
 #include <sol/sol.hpp>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {

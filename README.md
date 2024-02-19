@@ -6,7 +6,7 @@ Building:
 3) cd build
 4) cmake ..
 
-SDL Libraries To Point to from Cmake
+SDL Libraries To Point to from Cmake (link binaries)
 SDL2
 SDL2main
 SDL2_image

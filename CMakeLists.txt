@@ -4,7 +4,7 @@ project(2D_Engine)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-add_compile_options(/W4 /WX)
+add_compile_options(/W4 /WX /wd4201)
 
 # Manually set the SDL2 paths
 set(SDL2_INCLUDE_DIRS "C:/SDL2/include")
@@ -38,6 +38,9 @@ add_executable(2D_Engine main.cpp ${PROJECT_SOURCES})
 # Organize files into src and thirdParty groups for Visual Studio
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 
+
+# Either can link to these dynamically or statically:
+
 # Link against SDL2, SDL2_image, SDL2_ttf, and Lua
 target_link_libraries(2D_Engine "${SDL2_LIBRARIES}/SDL2.lib" "${SDL2_LIBRARIES}/SDL2main.lib" "${SDL2_IMAGE_LIBRARIES}/SDL2_image.lib" "${SDL2_TTF_LIBRARIES}/SDL2_ttf.lib" "${SDL2_MIXER_LIBRARIES}/SDL2_mixer.lib" "${LUA_LIBRARIES}/liblua54.a")
 
@@ -47,5 +50,5 @@ file(COPY
     "${SDL2_IMAGE_LIBRARIES}/SDL2_image.dll" 
     "${SDL2_TTF_LIBRARIES}/SDL2_ttf.dll" 
     "${SDL2_MIXER_LIBRARIES}/SDL2_mixer.dll" 
-    "${LUA_LIBRARIES}/lua54.dll" 
+    "${LUA_LIBRARIES}/lua54.dll"  
     DESTINATION ${CMAKE_BINARY_DIR})
