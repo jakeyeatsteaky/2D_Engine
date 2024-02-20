@@ -26,22 +26,21 @@ set(SDL2_MIXER_LIBRARIES "C:/SDL2_mixer/lib/x64")
 set(LUA_INCLUDE_DIRS "C:/Lua_win/include")
 set(LUA_LIBRARIES "C:/Lua_win")
 
-# Include the SDL2, SDL2_image, SDL2_ttf, and Lua directories
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS} ${LUA_INCLUDE_DIRS} ./src ./thirdParty)
+# Include the SDL2, SDL2_image, SDL2_ttf, SDL2_mixer, and Lua directories
+# Ensure the ./thirdParty directory is included for compiler include path
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS} ${LUA_INCLUDE_DIRS} ./src ./thirdParty ./include)
 
-# Globbing source files
-file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp" "thirdParty/*.cpp")
-file(GLOB_RECURSE PROJECT_HEADERS "src/*.h" "src/*.hpp" "thirdParty/*.h" "thirdParty/*.hpp")
+# Globbing source and header files
+file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp")
+file(GLOB_RECURSE PROJECT_HEADERS "include/*.hpp")
 
-add_executable(2D_Engine main.cpp ${PROJECT_SOURCES})
+add_executable(2D_Engine main.cpp ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 
-# Organize files into src and thirdParty groups for Visual Studio
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PROJECT_SOURCES} ${PROJECT_HEADERS})
+# Organizing files into "Source Files" and "Header Files" groups for Visual Studio
+source_group("Source Files" FILES ${PROJECT_SOURCES})
+source_group("Header Files" FILES ${PROJECT_HEADERS})
 
-
-# Either can link to these dynamically or statically:
-
-# Link against SDL2, SDL2_image, SDL2_ttf, and Lua
+# Link against SDL2, SDL2_image, SDL2_ttf, SDL2_mixer, and Lua
 target_link_libraries(2D_Engine "${SDL2_LIBRARIES}/SDL2.lib" "${SDL2_LIBRARIES}/SDL2main.lib" "${SDL2_IMAGE_LIBRARIES}/SDL2_image.lib" "${SDL2_TTF_LIBRARIES}/SDL2_ttf.lib" "${SDL2_MIXER_LIBRARIES}/SDL2_mixer.lib" "${LUA_LIBRARIES}/liblua54.a")
 
 # Copy DLLs to the output directory
