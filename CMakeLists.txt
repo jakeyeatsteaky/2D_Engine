@@ -33,12 +33,14 @@ include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_I
 # Globbing source and header files
 file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp")
 file(GLOB_RECURSE PROJECT_HEADERS "include/*.hpp")
+set(NOTES_FILE "notes.md") 
 
 add_executable(2D_Engine main.cpp ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 
 # Organizing files into "Source Files" and "Header Files" groups for Visual Studio
 source_group("Source Files" FILES ${PROJECT_SOURCES})
 source_group("Header Files" FILES ${PROJECT_HEADERS})
+source_group("Notes" FILES ${NOTES_FILE}) 
 
 # Link against SDL2, SDL2_image, SDL2_ttf, SDL2_mixer, and Lua
 target_link_libraries(2D_Engine "${SDL2_LIBRARIES}/SDL2.lib" "${SDL2_LIBRARIES}/SDL2main.lib" "${SDL2_IMAGE_LIBRARIES}/SDL2_image.lib" "${SDL2_TTF_LIBRARIES}/SDL2_ttf.lib" "${SDL2_MIXER_LIBRARIES}/SDL2_mixer.lib" "${LUA_LIBRARIES}/liblua54.a")
