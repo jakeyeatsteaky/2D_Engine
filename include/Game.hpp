@@ -1,14 +1,21 @@
 #ifndef GAME_HPP
 #define GAME_HPP
+#pragma once
 
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 #include <stdint.h>
 
-constexpr std::string_view GAME_TITLE = "2DEngine\0";
-constexpr uint32_t WINDOW_WIDTH = 800;
-constexpr uint32_t WINDOW_HEIGHT = 600; 
+namespace Engine
+{
+    constexpr std::string_view GAME_TITLE = "2DEngine\0";
+    constexpr uint32_t DEFAULT_WINDOW_WIDTH = 800;
+    constexpr uint32_t DEFAULT_WINDOW_HEIGHT = 600; 
+    constexpr std::string_view PATH_TO_ASSETS = "./assets/images/\0";
+    std::vector<std::string> ASSETS_LIST_PNG;
+}
 
 class Game
 {
@@ -20,7 +27,8 @@ public:
     Game();
     ~Game();
 
-    int Setup();
+    int Init();
+    void Setup();
     void Run();
     void Input();
     void Update();
@@ -31,6 +39,9 @@ public:
 
     bool m_initialized;
     bool m_running;
+
+    int m_windowWidth;
+    int m_windowHeight;
 };
 
 #endif // end GAME_HPP

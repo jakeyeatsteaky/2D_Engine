@@ -5,7 +5,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     {
         Game game;
-        if(game.Setup()) return -1; // returns 0 on success
+        if(game.Init()) return -1; // returns 0 on success
         game.Run();
         game.Destroy(); // all resources managed with smart pointers so right now this function isn't implemented;
     }
