@@ -13,8 +13,8 @@ namespace Engine
     constexpr std::string_view GAME_TITLE = "2DEngine\0";
     constexpr uint32_t DEFAULT_WINDOW_WIDTH = 800;
     constexpr uint32_t DEFAULT_WINDOW_HEIGHT = 600; 
-    constexpr std::string_view PATH_TO_ASSETS = "./assets/images/\0";
-    std::vector<std::string> ASSETS_LIST_PNG;
+    constexpr std::string_view PATH_TO_ASSETS = "../assets/images/\0";
+    const std::string getPngFromList(unsigned index) ;
 }
 
 class Game

@@ -1,6 +1,26 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Game.hpp"
+#include <glm/glm.hpp>
+
+namespace Engine
+{
+    const std::string getPngFromList(unsigned index) 
+    {
+        std::vector<std::string> ret = {
+        "bullet.png",
+        "chopper-spritesheet.png",
+        "tank-tiger-right.png"
+        };
+
+        if(index < static_cast<unsigned>(ret.size()))
+            return ret.at(index);
+        else
+            return "Error -> invalid index";
+    }
+
+
+}
 
 Game::Game() : 
     m_window(nullptr, SDL_DestroyWindow),
@@ -62,10 +82,12 @@ int Game::Init()
 
     return 0;
 }
-
+glm::vec2 playerPosition;
+glm::vec2 playerVelocity;
 void Game::Setup()
 {
-
+    playerPosition = glm::vec2(10.0, 20.0);
+    playerVelocity = glm::vec2(1.0, 0.5);
 }
 
 void Game::Run()
@@ -105,9 +127,10 @@ void Game::Input()
 
 }
 
+
 void Game::Update()
 {
-
+    playerPosition += playerVelocity;
 }
 
 void Game::Render() const
@@ -115,11 +138,20 @@ void Game::Render() const
     SDL_SetRenderDrawColor(m_renderer.get(), 0x45, 0x5F, 0xAA, 0xFF);
     SDL_RenderClear(m_renderer.get());
 
-    std::string tiger = Engine::PATH_TO_ASSETS.data() + Engine::ASSETS_LIST_PNG.at(2);
+    std::string tiger = Engine::PATH_TO_ASSETS.data() + Engine::getPngFromList(2);
+
+    SDL_Rect tigerRect = {
+        (int)playerPosition.x, 
+        (int)playerPosition.y, 
+        (int)playerPosition.y, 
+        (int)playerPosition.y};
+
     SDL_Surface* surface = IMG_Load(tiger.c_str());
+   
     SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer.get(), surface);
     SDL_FreeSurface(surface);                                                       // dont need the surface once you have the texture.
-    SDL_RenderCopy(m_renderer.get(), texture, NULL, NULL);
+    SDL_RenderCopy(m_renderer.get(), texture, NULL, &tigerRect);
+    SDL_DestroyTexture(texture);
 
     SDL_RenderPresent(m_renderer.get()); // swap buffers
 }
