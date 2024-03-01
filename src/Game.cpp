@@ -2,6 +2,11 @@
 #include <SDL_image.h>
 #include "Game.hpp"
 #include <glm/glm.hpp>
+#include <chrono>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 namespace Engine
 {
@@ -25,6 +30,10 @@ namespace Engine
 Game::Game() : 
     m_window(nullptr, SDL_DestroyWindow),
     m_renderer(nullptr, SDL_DestroyRenderer),
+    m_pFrameRateChecker(nullptr),
+    m_frameRateMutex(),
+    m_frameRate(0.0),
+    m_millisecondsPreviousFrame(0),
     m_initialized(false),
     m_running(false),
     m_windowWidth(Engine::DEFAULT_WINDOW_WIDTH),
@@ -35,6 +44,7 @@ Game::Game() :
 
 Game::~Game()
 {
+    m_pFrameRateChecker->join();
     std::cout << "Destroying the Game Object" << std::endl;
 }
 
@@ -64,7 +74,7 @@ int Game::Init()
         return -1;
     }
 
-    SDL_Renderer* pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer* pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED); // | SDL_RENDERER_PRESENTVSYNC will keep frame rate for this at 60fps roughly
 
     if (!pRenderer)
     {
@@ -82,12 +92,23 @@ int Game::Init()
 
     return 0;
 }
+
 glm::vec2 playerPosition;
 glm::vec2 playerVelocity;
+
+
 void Game::Setup()
 {
     playerPosition = glm::vec2(10.0, 20.0);
     playerVelocity = glm::vec2(1.0, 0.5);
+
+    // kick off framerate thread
+    m_pFrameRateChecker = std::shared_ptr<std::thread>(new std::thread(&Game::CheckFrameRate, this));
+
+#ifdef WIN32
+    SetThreadDescription(m_pFrameRateChecker->native_handle(), L"CheckFrameRate");
+#endif
+
 }
 
 void Game::Run()
@@ -127,10 +148,28 @@ void Game::Input()
 
 }
 
-
 void Game::Update()
 {
+    uint32_t frameStart = SDL_GetTicks();
+
+    // Perform game state updates
     playerPosition += playerVelocity;
+
+
+    uint32_t elapsedTime = SDL_GetTicks() - frameStart;
+    uint32_t delayTime = static_cast<uint32_t>(Engine::MILLISECONDS_PER_FRAME) > elapsedTime ? static_cast<uint32_t>(Engine::MILLISECONDS_PER_FRAME) - elapsedTime : 0;
+    if (delayTime > 0) {
+        SDL_Delay(delayTime);
+    }
+
+    m_millisecondsPreviousFrame = SDL_GetTicks();
+
+    uint32_t totalFrameTime = static_cast<uint32_t>(m_millisecondsPreviousFrame) - frameStart;
+
+    {
+        std::lock_guard<std::mutex> lock(m_frameRateMutex);
+        m_frameRate = 1000.0 / totalFrameTime; 
+    }
 }
 
 void Game::Render() const
@@ -159,6 +198,22 @@ void Game::Render() const
 void Game::Destroy()
 {
 
+}
+
+void Game::CheckFrameRate() const
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(500)); // allow game to start up
+    while(m_running)
+    {
+
+        {
+            std::lock_guard<std::mutex> lock(m_frameRateMutex);
+            std::cout << "FPS: " << m_frameRate << std::endl;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    std::cout << "Exiting Check Frame Rate Thread" << std::endl;
 }
 
 void Game::ProcessKeyDown(const SDL_Keycode& keyCode) 
