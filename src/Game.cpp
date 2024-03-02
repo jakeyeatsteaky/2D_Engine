@@ -93,14 +93,14 @@ int Game::Init()
     return 0;
 }
 
-glm::vec2 playerPosition;
-glm::vec2 playerVelocity;
+glm::dvec2 playerPosition;
+glm::dvec2 playerVelocity;
 
 
 void Game::Setup()
 {
     playerPosition = glm::vec2(10.0, 20.0);
-    playerVelocity = glm::vec2(1.0, 0.5);
+    playerVelocity = glm::vec2(10.0, 5.0); // value is in pixels
 
     // kick off framerate thread
     m_pFrameRateChecker = std::shared_ptr<std::thread>(new std::thread(&Game::CheckFrameRate, this));
@@ -151,13 +151,14 @@ void Game::Input()
 void Game::Update()
 {
     uint32_t frameStart = SDL_GetTicks();
-
+    
+    double deltaTime = (SDL_GetTicks() - m_millisecondsPreviousFrame) / 1000.f;
     // Perform game state updates
-    playerPosition += playerVelocity;
-
+    playerPosition.x += (double)playerVelocity.x * deltaTime;
+    playerPosition.y += (double)playerVelocity.y * deltaTime;
 
     uint32_t elapsedTime = SDL_GetTicks() - frameStart;
-    uint32_t delayTime = static_cast<uint32_t>(Engine::MILLISECONDS_PER_FRAME) > elapsedTime ? static_cast<uint32_t>(Engine::MILLISECONDS_PER_FRAME) - elapsedTime : 0;
+    uint32_t delayTime = Engine::MILLISECONDS_PER_FRAME > elapsedTime ? Engine::MILLISECONDS_PER_FRAME - elapsedTime : 0;
     if (delayTime > 0) {
         SDL_Delay(delayTime);
     }
