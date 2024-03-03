@@ -1,8 +1,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
-#include "Game.hpp"
 #include <glm/glm.hpp>
 #include <chrono>
+#include "Game.hpp"
+#include "Logger.hpp"
 
 #ifdef WIN32
 #include <windows.h>
@@ -45,14 +46,14 @@ Game::Game() :
 Game::~Game()
 {
     m_pFrameRateChecker->join();
-    std::cout << "Destroying the Game Object" << std::endl;
+    Logger::Log("Destroying the Game Object");
 }
 
 int Game::Init()
 {
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
-        std::cerr << "Error initializing SDL: " <<SDL_GetError() << std::endl;
+        Logger::Err("Error initializing SDL: ", SDL_GetError());
         return -1;
     }    
 
@@ -70,7 +71,7 @@ int Game::Init()
                                           SDL_WINDOW_RESIZABLE); // SDL_WINDOW_BORDERLESS
     if(!pWindow)
     {
-        std::cerr << "Error initializing SDL Window: " << SDL_GetError() << std::endl;
+        Logger::Err("Error initializing SDL Window: ", SDL_GetError());
         return -1;
     }
 
@@ -78,7 +79,7 @@ int Game::Init()
 
     if (!pRenderer)
     {
-        std::cerr << "Error initializing SDL Renderer: " << SDL_GetError() << std::endl;
+        Logger::Err("Error initializing SDL Renderer: ", SDL_GetError());
         return -1;
     }
 
@@ -158,10 +159,12 @@ void Game::Input()
 
 void Game::Update()
 {
-    /*int timeToWait = Engine::MILLISECONDS_PER_FRAME - (SDL_GetTicks() - (uint32_t)m_millisecondsPreviousFrame);
+#if LOCK_FRAMERATE
+    int timeToWait = Engine::MILLISECONDS_PER_FRAME - (SDL_GetTicks() - (uint32_t)m_millisecondsPreviousFrame);
     if (timeToWait > 0) {
         SDL_Delay(timeToWait);
-    }*/
+    }
+#endif
 
     // After delay, update the game state
     double deltaTime = (SDL_GetTicks() - m_millisecondsPreviousFrame) / 1000.0; 
@@ -210,12 +213,12 @@ void Game::CheckFrameRate() const
 
         {
             std::lock_guard<std::mutex> lock(m_frameRateMutex);
-            std::cout << "FPS: " << m_frameRate << std::endl;
+            Logger::Log_("FPS: ", m_frameRate);
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
-    std::cout << "Exiting Check Frame Rate Thread" << std::endl;
+    Logger::Log("Exiting Check Frame Rate Thread");
 }
 
 void Game::ProcessKeyDown(const SDL_Keycode& keyCode) 
@@ -225,19 +228,19 @@ void Game::ProcessKeyDown(const SDL_Keycode& keyCode)
         case SDLK_ESCAPE:
         {
             m_running = false;
-            std::cout << "Exiting the Application" << std::endl;
+            Logger::Log("Exiting the Application");
             break;
         }
 
         case SDLK_SPACE:
         {
-            std::cout << "Pushed the SPACE BAR" << std::endl;
+            Logger::Log("Pushed the SPACE BAR");
             break;
         }
 
         default:
         {
-            std::cout << "SDL Key Code " << keyCode << " processing has not been handled" << std::endl;
+             Logger::Log("SDL Key Code", keyCode, "processing has not been handled");
             break;
         }
 

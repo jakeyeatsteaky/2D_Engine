@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include "Game.hpp"
+#include "Logger.hpp"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) 
 {
@@ -12,6 +13,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
     SDL_Quit();
 
-    std::cout << "success" << std::endl;
+    Logger::Log("success");
     return 0;
 }

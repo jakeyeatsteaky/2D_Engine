@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <mutex>
 
+#define LOCK_FRAMERATE 1
+
 namespace Engine
 {
     // startup constants
@@ -19,7 +21,7 @@ namespace Engine
     constexpr std::string_view PATH_TO_ASSETS = "../assets/images/\0";
 
     // Framerate data
-    constexpr uint32_t FPS = 500;
+    constexpr uint32_t FPS = 120;
     constexpr uint32_t MILLISECONDS_PER_FRAME = static_cast<uint32_t>(1000 / FPS);
 
     // utility methods
