@@ -19,7 +19,7 @@ namespace Engine
     constexpr std::string_view PATH_TO_ASSETS = "../assets/images/\0";
 
     // Framerate data
-    constexpr uint8_t FPS = 60;
+    constexpr uint32_t FPS = 500;
     constexpr uint32_t MILLISECONDS_PER_FRAME = static_cast<uint32_t>(1000 / FPS);
 
     // utility methods

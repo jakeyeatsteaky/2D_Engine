@@ -117,9 +117,17 @@ void Game::Run()
 
     while (m_running)
     {
+        auto start = std::chrono::high_resolution_clock::now();
         Input();
         Update();
         Render();
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double, std::milli> duration = end - start;
+        {
+            std::lock_guard<std::mutex> lock(m_frameRateMutex);
+            m_frameRate = 1000 / duration.count();
+        }
     }
 }
 
@@ -150,27 +158,20 @@ void Game::Input()
 
 void Game::Update()
 {
-    uint32_t frameStart = SDL_GetTicks();
-    
-    double deltaTime = (SDL_GetTicks() - m_millisecondsPreviousFrame) / 1000.f;
-    // Perform game state updates
-    playerPosition.x += (double)playerVelocity.x * deltaTime;
-    playerPosition.y += (double)playerVelocity.y * deltaTime;
+    /*int timeToWait = Engine::MILLISECONDS_PER_FRAME - (SDL_GetTicks() - (uint32_t)m_millisecondsPreviousFrame);
+    if (timeToWait > 0) {
+        SDL_Delay(timeToWait);
+    }*/
 
-    uint32_t elapsedTime = SDL_GetTicks() - frameStart;
-    uint32_t delayTime = Engine::MILLISECONDS_PER_FRAME > elapsedTime ? Engine::MILLISECONDS_PER_FRAME - elapsedTime : 0;
-    if (delayTime > 0) {
-        SDL_Delay(delayTime);
-    }
+    // After delay, update the game state
+    double deltaTime = (SDL_GetTicks() - m_millisecondsPreviousFrame) / 1000.0; 
+
+    // Update game state here
+    playerPosition.x += playerVelocity.x * deltaTime;
+    playerPosition.y += playerVelocity.y * deltaTime;
 
     m_millisecondsPreviousFrame = SDL_GetTicks();
 
-    uint32_t totalFrameTime = static_cast<uint32_t>(m_millisecondsPreviousFrame) - frameStart;
-
-    {
-        std::lock_guard<std::mutex> lock(m_frameRateMutex);
-        m_frameRate = 1000.0 / totalFrameTime; 
-    }
 }
 
 void Game::Render() const
@@ -183,8 +184,8 @@ void Game::Render() const
     SDL_Rect tigerRect = {
         (int)playerPosition.x, 
         (int)playerPosition.y, 
-        (int)playerPosition.y, 
-        (int)playerPosition.y};
+        50, 
+        50};
 
     SDL_Surface* surface = IMG_Load(tiger.c_str());
    
