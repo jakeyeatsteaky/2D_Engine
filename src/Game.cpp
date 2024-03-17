@@ -59,9 +59,9 @@ int Game::Init()
     }    
 
     // Remove Test:
-    Log(ColorString("TEsttestest", TextColor_Default));
-    Log(ColorString("TEsttestest", TextColor_Error));
-    Log(ColorString("TEsttestest", TextColor_Okay));
+    Logger::Log(ColorString("TEsttestest", TextColor_Default));
+    Logger::Log(ColorString("TEsttestest", TextColor_Error));
+    Logger::Log(ColorString("TEsttestest", TextColor_Okay));
 
     // Screen dimensions for window
     SDL_DisplayMode displayMode;

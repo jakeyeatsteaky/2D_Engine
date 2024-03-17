@@ -1,6 +1,5 @@
 #include "Logger.hpp"
 
-
 void Logger::Err(const std::string& err)
 {
 	std::cout << "ERROR:: " << err << std::endl;

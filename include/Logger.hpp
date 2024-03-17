@@ -6,9 +6,6 @@
 
 std::string GetDateAndTime();
 
-
-
-
 class Logger
 {
 private:
@@ -18,9 +15,9 @@ public:
 	static void Log(const T& msg, const Args&... args)
 	{
  		std::string timestamp = GetDateAndTime();
-		std::cout << startColorCode << "LOG::" << timestamp << ": " << msg;
+		std::cout << "LOG::" << timestamp << ": " << msg;
 		((std::cout << " " << args), ...);
-		std::cout << endColorCode << std::endl;
+		std::cout << std::endl;
 	}
 
 	template <typename T, typename... Args>
