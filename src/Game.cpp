@@ -4,6 +4,7 @@
 #include <chrono>
 #include "Game.hpp"
 #include "Logger.hpp"
+#include "Utility.hpp"
 
 #ifdef WIN32
 #include <windows.h>
@@ -53,9 +54,14 @@ int Game::Init()
 {
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
-        Logger::Err("Error initializing SDL: ", SDL_GetError());
+        Logger::Err(ColorString("Error initializing SDL: ", TextColor_Error), SDL_GetError());
         return -1;
     }    
+
+    // Remove Test:
+    Log(ColorString("TEsttestest", TextColor_Default));
+    Log(ColorString("TEsttestest", TextColor_Error));
+    Log(ColorString("TEsttestest", TextColor_Okay));
 
     // Screen dimensions for window
     SDL_DisplayMode displayMode;

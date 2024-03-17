@@ -31,10 +31,12 @@ namespace Engine
 
 #if 0
     TODO
-        [ ] Implement fixed update
+        [x] Implement fixed update
             Right now I have a mechanism in place which will limit the update cycle based on my target frame rate
             this still leads to 120fps gameplay being twice as fast as 60fps.  
              i want to decouple the update loop (fixed time step) and the render loop (target fps)
+
+        [ ] Overload the << operator for Logger << 3/17/2024
 
 #endif
 class Game
